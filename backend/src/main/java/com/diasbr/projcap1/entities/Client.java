@@ -4,11 +4,21 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
+
+@Entity
+@Table(name = "tb_client") //define nome da tabela no banco
 public class Client implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	// declarar atributos
+	@Id 
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // id auto incerementavel
 	private Long id;
 	private String name;
 	private String cpf;
