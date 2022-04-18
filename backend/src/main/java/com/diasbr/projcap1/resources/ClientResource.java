@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.diasbr.projcap1.dto.ClientDTO;
 import com.diasbr.projcap1.entities.Client;
 import com.diasbr.projcap1.services.ClientService;
 
@@ -19,7 +20,7 @@ public class ClientResource {
 	private ClientService service;
 	
 	@GetMapping // annotation para configurar como endpoint/web service
-	public ResponseEntity<List<Client>> findAll() { // ResponseEntity encapsula respota http
+	public ResponseEntity<List<ClientDTO>> findAll() { // ResponseEntity encapsula respota http
 		/*
 		 * List<Client> list = new ArrayList<>();
 		 * list.add(new Client(1L, "Bruno", "111.111.111-11", 1000D, null, 1));
@@ -28,7 +29,7 @@ public class ClientResource {
 		 * list.add(new Client(4L, "Lorena", "444.444.444-44", 4000D, null, 4));
 		 */
 		
-		List<Client> list = service.findAll();
+		List<ClientDTO> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 
 	}
