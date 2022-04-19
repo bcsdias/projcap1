@@ -1,6 +1,7 @@
 package com.diasbr.projcap1.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.diasbr.projcap1.dto.ClientDTO;
 import com.diasbr.projcap1.entities.Client;
 import com.diasbr.projcap1.repositories.ClientRepository;
+import com.diasbr.projcap1.services.exceptions.EntityNotFoundException;
 
 @Service
 public class ClientService {
@@ -34,6 +36,12 @@ public class ClientService {
 		*/
 		
 		
+	}
+	@Transactional(readOnly = true) // IMPORTAR DO SPRING
+	public ClientDTO findById(Long id) {
+		Optional<Client> obj = repository.findById(id);
+		Client entity = obj.orElseThrow(() -> new EntityNotFoundException("Entidade não encontada"));
+		return new ClientDTO(entity);
 	}
 	
 }
