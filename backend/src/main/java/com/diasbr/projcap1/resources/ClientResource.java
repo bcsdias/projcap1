@@ -1,9 +1,11 @@
 package com.diasbr.projcap1.resources;
 
 import java.net.URI;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,46 +27,46 @@ public class ClientResource {
 
 	@Autowired
 	private ClientService service;
-	
+
 	@GetMapping // annotation para configurar como endpoint/web service
-	public ResponseEntity<List<ClientDTO>> findAll() { // ResponseEntity encapsula respota http
-		/*
-		 * List<Client> list = new ArrayList<>();
-		 * list.add(new Client(1L, "Bruno", "111.111.111-11", 1000D, null, 1));
-		 * list.add(new Client(2L, "Isabela", "222.222.222-22", 2000D, null, 2));
-		 * list.add(new Client(3L, "Viviane", "333.333.333-33", 3000D, null, 3));
-		 * list.add(new Client(4L, "Lorena", "444.444.444-44", 4000D, null, 4));
-		 */
-		
-		List<ClientDTO> list = service.findAll();
+	// ResponseEntity encapsula resposta http
+	public ResponseEntity<Page<ClientDTO>> findAll(
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
+			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
+			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) { 
+			
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+
+		Page<ClientDTO> list = service.findAllPaged(pageRequest);
 		return ResponseEntity.ok().body(list);
 
 	}
-	
+
 	@GetMapping(value = "/{id}") // annotation para configurar como endpoint/web service
 	public ResponseEntity<ClientDTO> findById(@PathVariable Long id) { // ResponseEntity encapsula resposta http
-			ClientDTO dto = service.findById(id);			
+		ClientDTO dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@PostMapping
 	public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO dto) {
 		dto = service.insert(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
-	
+
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO dto) {
 		dto = service.update(id, dto);
-		
+
 		return ResponseEntity.ok().body(dto);
 	}
-	
+
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		service.delete(id);
-		
+
 		return ResponseEntity.noContent().build();
 	}
 }

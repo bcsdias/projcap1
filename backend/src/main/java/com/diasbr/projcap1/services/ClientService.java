@@ -2,13 +2,14 @@ package com.diasbr.projcap1.services;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,11 +26,11 @@ public class ClientService {
 	private ClientRepository repository;
 
 	@Transactional(readOnly = true) // IMPORTAR DO SPRING
-	public List<ClientDTO> findAll() {
-		List<Client> list = repository.findAll();
+	public Page<ClientDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Client> list = repository.findAll(pageRequest);
 
 		// CONVERTER LISTA DE CLIENT PARA UMA LISTA CLIENTDTO
-		return list.stream().map(x -> new ClientDTO(x)).collect(Collectors.toList());
+		return list.map(x -> new ClientDTO(x));
 
 		/*
 		 * OUTRA FORMA PARA CONVERTER LISTA DE CLIENT PARA UMA LISTA CLIENTDTO
